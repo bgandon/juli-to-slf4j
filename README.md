@@ -208,10 +208,10 @@ In the `setenv.sh` snippet above, please note that setting
 `logback.ContextSelector` is optional. This system property can also be
 customized in `${catalina.base}/conf/catalina.properties`, which creates
 system properties at static initialization of catalina startup classes. This
-is quite early, but all other system properties above must be in `setenv.sh`,
-so that they get properly created event before. Indeed, the static loggers
-defined in catalina startup classes are initialized right before
-`catalina.properties` is parsed.
+is early, but all other system properties above must be in `setenv.sh`, so
+that they get properly created even before. Indeed, the static loggers defined
+in catalina startup classes are initialized right before `catalina.properties`
+is parsed.
 
 
 Author and License
