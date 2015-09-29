@@ -18,12 +18,18 @@ package org.apache.juli.logging.impl;
 
 import static java.lang.String.valueOf;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.slf4j.spi.LocationAwareLogger.DEBUG_INT;
+import static org.slf4j.spi.LocationAwareLogger.ERROR_INT;
+import static org.slf4j.spi.LocationAwareLogger.INFO_INT;
+import static org.slf4j.spi.LocationAwareLogger.TRACE_INT;
+import static org.slf4j.spi.LocationAwareLogger.WARN_INT;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
+import org.slf4j.spi.LocationAwareLogger;
 
 /**
  * A {@link Log} facade that delegates to an underlying wrapped {@link Logger}
@@ -34,12 +40,17 @@ import org.slf4j.Logger;
  * the default "lean" JULI {@link org.apache.juli.logging.LogFactory LogFactory}
  * can discover it as a proper {@link Log} implementation
  * {@linkplain java.util.ServiceLoader provider}.
+ * <p>
+ * This implementation also properly supports the case were the underlying
+ * logger is a {@link LocationAwareLogger}.
  *
  * @author Benjamin Gandon
  */
 public class SLF4JDelegatingLog implements Log, Serializable {
 
     private static final long serialVersionUID = 5406218772899675141L;
+
+    private static final String FQCN = SLF4JDelegatingLog.class.getName();
 
     /**
      * The logger's name.
@@ -59,14 +70,30 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * {@code jcl-over-slf4j}, the logger instance is <em>transient</em>, so we
      * do the same here.
      */
-    private transient Logger logger;
+    private transient Logger log;
+
+    /**
+     * This flag is {@code false} when the underlying implementation is a
+     * {@link LocationAwareLogger}.
+     * <p>
+     * We use a final boolean here to give a chance to JITs to properly optimize
+     * methods bodies.
+     * <p>
+     * We use the {@code true} value for the most common case that we want to
+     * optimize. Location aware loggers generally have a larger computational
+     * cost.
+     */
+    private final boolean noLocationAware;
 
     /**
      * The default constructor is mandatory, as per the
      * {@link java.util.ServiceLoader ServiceLoader} specification.
+     * <p>
+     * This will construct an unusable {@link Log}, though.
      */
     public SLF4JDelegatingLog() {
         super();
+        noLocationAware = true;
     }
 
     /**
@@ -78,8 +105,9 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      *            the name of the logger to create.
      */
     public SLF4JDelegatingLog(final String name) {
-        this();
-        logger = getLogger(name);
+        super();
+        log = getLogger(name);
+        noLocationAware = !(log instanceof LocationAwareLogger);
     }
 
     /**
@@ -92,7 +120,7 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      */
     @Override
     public boolean isTraceEnabled() {
-        return logger.isTraceEnabled();
+        return log.isTraceEnabled();
     }
 
     /**
@@ -105,7 +133,7 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      */
     @Override
     public boolean isDebugEnabled() {
-        return logger.isDebugEnabled();
+        return log.isDebugEnabled();
     }
 
     /**
@@ -118,7 +146,7 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      */
     @Override
     public boolean isInfoEnabled() {
-        return logger.isInfoEnabled();
+        return log.isInfoEnabled();
     }
 
     /**
@@ -131,7 +159,7 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      */
     @Override
     public boolean isWarnEnabled() {
-        return logger.isWarnEnabled();
+        return log.isWarnEnabled();
     }
 
     /**
@@ -144,7 +172,7 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      */
     @Override
     public boolean isErrorEnabled() {
-        return logger.isErrorEnabled();
+        return log.isErrorEnabled();
     }
 
     /**
@@ -159,7 +187,7 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      */
     @Override
     public boolean isFatalEnabled() {
-        return logger.isErrorEnabled();
+        return log.isErrorEnabled();
     }
 
     /**
@@ -169,12 +197,16 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it as {@code TRACE} level using the wrapped
      * {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
      */
     @Override
-    public void trace(final Object message) {
-        logger.trace(valueOf(message));
+    public void trace(final Object msg) {
+        if (noLocationAware) {
+            log.trace(valueOf(msg));
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, TRACE_INT, valueOf(msg), null, null);
+        }
     }
 
     /**
@@ -184,14 +216,18 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it along with the given throwable as {@code TRACE}
      * level, using the wrapped {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
-     * @param throwable
+     * @param thrown
      *            the throwable to log
      */
     @Override
-    public void trace(final Object message, final Throwable throwable) {
-        logger.trace(valueOf(message), throwable);
+    public void trace(final Object msg, final Throwable thrown) {
+        if (noLocationAware) {
+            log.trace(valueOf(msg), thrown);
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, TRACE_INT, valueOf(msg), null, thrown);
+        }
     }
 
     /**
@@ -201,12 +237,16 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it as {@code DEBUG} level using the wrapped
      * {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
      */
     @Override
-    public void debug(final Object message) {
-        logger.debug(valueOf(message));
+    public void debug(final Object msg) {
+        if (noLocationAware) {
+            log.debug(valueOf(msg));
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, DEBUG_INT, valueOf(msg), null, null);
+        }
     }
 
     /**
@@ -216,14 +256,18 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it along with the given throwable as {@code DEBUG}
      * level, using the wrapped {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
-     * @param throwable
+     * @param thrown
      *            the throwable to log
      */
     @Override
-    public void debug(final Object message, final Throwable throwable) {
-        logger.debug(valueOf(message), throwable);
+    public void debug(final Object msg, final Throwable thrown) {
+        if (noLocationAware) {
+            log.debug(valueOf(msg), thrown);
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, DEBUG_INT, valueOf(msg), null, thrown);
+        }
     }
 
     /**
@@ -233,12 +277,16 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it as {@code INFO} level using the wrapped
      * {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
      */
     @Override
-    public void info(final Object message) {
-        logger.info(valueOf(message));
+    public void info(final Object msg) {
+        if (noLocationAware) {
+            log.info(valueOf(msg));
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, INFO_INT, valueOf(msg), null, null);
+        }
     }
 
     /**
@@ -248,14 +296,18 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it along with the given throwable as {@code INFO}
      * level, using the wrapped {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
-     * @param throwable
+     * @param thrown
      *            the throwable to log
      */
     @Override
-    public void info(final Object message, final Throwable throwable) {
-        logger.info(valueOf(message), throwable);
+    public void info(final Object msg, final Throwable thrown) {
+        if (noLocationAware) {
+            log.info(valueOf(msg), thrown);
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, INFO_INT, valueOf(msg), null, thrown);
+        }
     }
 
     /**
@@ -265,12 +317,16 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it as {@code WARN} level using the wrapped
      * {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
      */
     @Override
-    public void warn(final Object message) {
-        logger.warn(valueOf(message));
+    public void warn(final Object msg) {
+        if (noLocationAware) {
+            log.warn(valueOf(msg));
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, WARN_INT, valueOf(msg), null, null);
+        }
     }
 
     /**
@@ -280,14 +336,18 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it along with the given throwable as {@code WARN}
      * level, using the wrapped {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
-     * @param throwable
+     * @param thrown
      *            the throwable to log
      */
     @Override
-    public void warn(final Object message, final Throwable throwable) {
-        logger.warn(String.valueOf(message), throwable);
+    public void warn(final Object msg, final Throwable thrown) {
+        if (noLocationAware) {
+            log.warn(String.valueOf(msg), thrown);
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, WARN_INT, valueOf(msg), null, thrown);
+        }
     }
 
     /**
@@ -297,12 +357,16 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it as {@code ERROR} level using the wrapped
      * {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
      */
     @Override
-    public void error(final Object message) {
-        logger.error(valueOf(message));
+    public void error(final Object msg) {
+        if (noLocationAware) {
+            log.error(valueOf(msg));
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, ERROR_INT, valueOf(msg), null, null);
+        }
     }
 
     /**
@@ -312,14 +376,18 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it along with the given throwable as {@code ERROR}
      * level, using the wrapped {@link Logger} instance.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
-     * @param throwable
+     * @param thrown
      *            the throwable to log
      */
     @Override
-    public void error(final Object message, final Throwable throwable) {
-        logger.error(valueOf(message), throwable);
+    public void error(final Object msg, final Throwable thrown) {
+        if (noLocationAware) {
+            log.error(valueOf(msg), thrown);
+        } else {
+            ((LocationAwareLogger) log).log(null, FQCN, ERROR_INT, valueOf(msg), null, thrown);
+        }
     }
 
     /**
@@ -329,12 +397,12 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * string}, and logs it as {@code ERROR} level using the wrapped
      * {@link Logger} instance, SLF4J has no {@code FATAL} level.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
      */
     @Override
-    public void fatal(final Object message) {
-        logger.error(valueOf(message));
+    public void fatal(final Object msg) {
+        error(msg);
     }
 
     /**
@@ -345,14 +413,14 @@ public class SLF4JDelegatingLog implements Log, Serializable {
      * level, using the wrapped {@link Logger} instance, because SLF4J has no
      * {@code FATAL} level.
      *
-     * @param message
+     * @param msg
      *            the message to log, to be converted to {@link String}
-     * @param throwable
+     * @param thrown
      *            the throwable to log
      */
     @Override
-    public void fatal(final Object message, final Throwable throwable) {
-        logger.error(valueOf(message), throwable);
+    public void fatal(final Object msg, final Throwable thrown) {
+        error(msg, thrown);
     }
 
     /**
