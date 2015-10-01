@@ -20,8 +20,12 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
 /**
- * An {@link org.slf4j.impl.StaticLoggerBinder} that stores and returns logger
+ * An {@code org.slf4j.impl.StaticLoggerBinder} that stores and returns logger
  * factories per thread.
+ * <p>
+ * The name and package of this class cannot be changed because the
+ * {@link org.slf4j.LoggerFactory} looks for this exact class name on its class
+ * path.
  * <p>
  * This is especially designed to run in multi-threaded automated tests
  * environments.
@@ -43,8 +47,12 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
         return SINGLETON;
     }
 
-    private ThreadLocal<ILoggerFactory> loggerFactory = new ThreadLocal<ILoggerFactory>();
+    private ThreadLocal<ILoggerFactory> loggerFactory = new ThreadLocal<>();
 
+    /**
+     * Set the logger factory to use for the current thread. This will typically
+     * be a mock object.
+     */
     public void setLoggerFactory(final ILoggerFactory loggerFactory) {
         this.loggerFactory.set(loggerFactory);
     }

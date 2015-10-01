@@ -17,12 +17,15 @@
 package org.apache.juli.logging.impl;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.slf4j.impl.StaticLoggerBinder.getSingleton;
 import static org.slf4j.spi.LocationAwareLogger.DEBUG_INT;
 import static org.slf4j.spi.LocationAwareLogger.ERROR_INT;
 import static org.slf4j.spi.LocationAwareLogger.INFO_INT;
@@ -54,7 +57,7 @@ public class TestSLF4JDelegatingLog {
     private ILoggerFactory loggerFactory;
 
     @InjectMocks
-    private StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();
+    private StaticLoggerBinder binder = getSingleton();
 
     @Before
     public void setup() {
@@ -78,12 +81,12 @@ public class TestSLF4JDelegatingLog {
         log.fatal("plip plop boom!");
 
         // Then
-        verify(logger).trace("plip plop details");
-        verify(logger).debug("plip plop dbg");
-        verify(logger).info("plip plop nfo");
-        verify(logger).warn("plip plop warning");
-        verify(logger).error("plip plop err");
-        verify(logger).error("plip plop boom!");
+        verify(logger).trace(eq("plip plop details"), isNull(Throwable.class));
+        verify(logger).debug(eq("plip plop dbg"), isNull(Throwable.class));
+        verify(logger).info(eq("plip plop nfo"), isNull(Throwable.class));
+        verify(logger).warn(eq("plip plop warning"), isNull(Throwable.class));
+        verify(logger).error(eq("plip plop err"), isNull(Throwable.class));
+        verify(logger).error(eq("plip plop boom!"), isNull(Throwable.class));
         verifyNoMoreInteractions(logger);
         verifyZeroInteractions(locatingLogger);
     }
@@ -127,7 +130,7 @@ public class TestSLF4JDelegatingLog {
         });
 
         // Then
-        verify(logger).info("pif paf pouf");
+        verify(logger).info(eq("pif paf pouf"), isNull(Throwable.class));
         verifyNoMoreInteractions(logger);
         verifyZeroInteractions(locatingLogger);
     }
@@ -146,11 +149,11 @@ public class TestSLF4JDelegatingLog {
         log.fatal(null);
 
         // Then
-        verify(logger).trace("null");
-        verify(logger).debug("null");
-        verify(logger).info("null");
-        verify(logger).warn("null");
-        verify(logger, times(2)).error("null");
+        verify(logger).trace(eq("null"), isNull(Throwable.class));
+        verify(logger).debug(eq("null"), isNull(Throwable.class));
+        verify(logger).info(eq("null"), isNull(Throwable.class));
+        verify(logger).warn(eq("null"), isNull(Throwable.class));
+        verify(logger, times(2)).error(eq("null"), isNull(Throwable.class));
         verifyNoMoreInteractions(logger);
         verifyZeroInteractions(locatingLogger);
     }
