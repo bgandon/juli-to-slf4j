@@ -147,10 +147,11 @@ about running the JULI-to-SLF4J bridge in production.
 Setup
 -----
 
-1. Build the `juli-to-slf4j` jar, running `mvn clean package` in the base
-   directory of this project. (If you don't have [Maven](https://maven.apache.org/)
-   on your system, you first need to `brew install maven` (or anything similar
-   with `apt-get` or `yum`) or [install it manually](https://maven.apache.org/install.html).)
+1. Build the JULI-to-SLF4J Maven project, running `mvn clean package` in the
+   base directory of this project. (If you don't have
+   [Maven](https://maven.apache.org/) on your system, you first need to
+   `brew install maven` (or anything similar with `apt-get` or `yum`) or
+   [install it manually](https://maven.apache.org/install.html).)
 
 2. Copy the resulting `target/juli-to-slf4j-1.1.0.jar` to your
    `$CATALINA_BASE/bin/` directory. (For details about the `$CATALINA_BASE`
@@ -257,8 +258,8 @@ Then you can customize your logging config with such a
     <root level="INFO">
         <appender-ref ref="ASYNC" />
     </root>
-</configuration>```
-
+</configuration>
+```
 
 
 ### Customizing Logback config for 3rd party web applications
@@ -373,13 +374,13 @@ concepts and rules you need to know. Fasten your seatbelt.
  - [A Short Guide To Hierarchical Class Loading](http://commons.apache.org/proper/commons-logging/tech.html#A_Short_Guide_To_Hierarchical_Class_Loading)
 
 When Logback is on the [System classpath](https://tomcat.apache.org/tomcat-8.0-doc/class-loader-howto.html#Class_Loader_Definitions),
-then any `ContextDetachingSCL` declared in a `web.xml` will be loaded by the
-System class loader. That's the rule, the child class loader used when parsing
-`web.xml` (and creating the web application) will delegate to its parent.
+then any `ContextDetachingSCL` declared in a `web.xml` (for a waeapp that
+doesn't ship with Logback) will be loaded by the System class loader. That's
+the rule. The child class loader used when parsing `web.xml` (and creating the
+web application) will delegate to its parent.
 
 So `ContextDetachingSCL` will use its own class loader (the System class
 loader) to load the `ServletContextListener` interface that it implements.
-
 Right. But that one is _not_ on the System classpath! It belongs to Tomcat
 jars, so it's on Catalina's classpath instead. As a result, the
 `ServletContextListener` interface can only be reached by the (child) Catalina
@@ -398,7 +399,7 @@ Author and License
 
 Copyright © 2015, Benjamin Gandon
 
-Like Tomcat, the `juli-to-slf4j` library is released under the terms of the
+Like Tomcat, the JULI-to-SLF4J library is released under the terms of the
 [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
 
 <!--
