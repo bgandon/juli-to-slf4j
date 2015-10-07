@@ -35,7 +35,7 @@ setup. But this blog post above suffers from many issues.
 
    It doesn't advise you to properly configure a [LevelChangePropagator](http://logback.qos.ch/manual/configuration.html#LevelChangePropagator).
    Without it, the impact of the _jul-to-slf4j_ bridge on performances can be
-   outrageous.
+   [outrageous](http://www.slf4j.org/legacy.html#jul-to-slf4j).
 
    Plus, the _JULI(mini)→JUL_ step has performance issues (see the code
    excerpt in [README](README.md)).
@@ -99,21 +99,24 @@ Compared to using _jcl-over-slf4j_
 
 Without any specific setup, just dropping the jcl-over-slf4j and SLF4J/Logback
 jars into `$CATALINA_BASE/lib/`, you can get very similar result as above,
-without requiring `tomcat-extras-juli-adapters`, obtaining a canonical
+without requiring `tomcat-extras-juli-adapters`, and obtaining a canonical
 _JULI(JCL)→jcl-over-slf4j→SLF4J_ setup.
 
 The observable difference is that the junk `juli.YYYY-MM-DD.log` file contains
-more logs that with the LOG4J setup above. Again, you can diable creating it
-with the two ways described above, and chose to always discard those early logs.
+more logs that with the LOG4J setup above. Again, you can diable its creation
+with the two ways described above, and chose to always discard those early
+pre-Catalina logs.
 
 
-This setup could be further improved, adding jcl-over-slf4j and SLF4J/Logback
-jars directly to `$CATALINA_BASE/bin/` and the System `$CLASSPATH`, but this
-would need to [shade](https://maven.apache.org/plugins/maven-shade-plugin/)
-the `jcl-over-slf4j.jar` in order to propagate into _jcl-over-slf4j_ the
-renaming of `org.apache.commons.logging` in `org.apache.juli.logging` that
-JULI relies on. This is exactly the point of _tomcat-slf4j-logback_ that we
-discuss below.
+Compared to _juli-jcl-over-slf4j_
+---------------------------------
+
+The setup above can be further improved, adding jcl-over-slf4j and
+SLF4J/Logback jars directly to `$CATALINA_BASE/bin/` and the System
+`$CLASSPATH`. This is exactly what we do in [juli-jcl-over-slf4j](https://github.com/bgandon/juli-jcl-over-slf4j).
+
+Then _tomcat-slf4j-logback_ just goes further in that direction as discussed
+below.
 
 
 Compared to _tomcat-slf4j-logback_
