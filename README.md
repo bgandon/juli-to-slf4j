@@ -95,7 +95,7 @@ and implements a direct _JULI→SLF4J_ connection, without heavy surgery,
 and without silently discarding any logs.
 
 
-### Limitations
+### Limitations and Caveats
 
 We only deal here with limitations related to using Logback as the SLF4J
 implementation. We are keen on hearing your feedback about using other SLF4J
@@ -136,6 +136,22 @@ described in the [Logging Separation](http://logback.qos.ch/manual/loggingSepara
 chapter. Your shared library will not be able to output differentiated logs,
 though. Differentiating the logs produced by different applications using this
 shared library will not be straightforward.
+
+#### Caveats
+
+The JULI-to-SLF4J bridge relies on an undocumented extension mechanism of the
+default [tomcat-juli](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.apache.tomcat%22%20AND%20a%3A%22tomcat-juli%22)
+that allows to plug-in any other logging system very simply, without resorting
+to a complete Jakarta Commons Logging library.
+
+The `juli-to-slf4j.jar` must appear before the `tomcat-juli.jar` on the
+`$CLASSPATH` as detailed below. Indeed, the default `org.slf4j.LoggerFactory`
+is not suppressed from the original `slf4j-api.jar`. It is just masked by the
+one provided by `juli-to-slf4j.jar`. Any reason for a non- guraanteed
+classpath order would result in a non-working system.
+
+Running Tomcat with a security manager requires some more setup in
+`conf/catalina.policy`.
 
 
 ### Can this be run in production?
