@@ -423,7 +423,3 @@ Like Tomcat, the JULI-to-SLF4J library is released under the terms of the
 # indent-tabs-mode: nil
 # End:
 -->
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/bgandon/juli-to-slf4j/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
