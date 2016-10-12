@@ -14,8 +14,8 @@
    limitations under the License.
 -->
 
-Tomcat JULI-to-SLF4J  bridge library
-====================================
+Tomcat JULI-to-SLF4J bridge library [![.](http://gaproxy.gstack.io/UA-68445280-1/bgandon/juli-to-slf4j/readme?pixel&dh=github.com)](https://github.com/gstackio/ga-beacon)
+===================================
 
 by Benjamin Gandon © 2015
 
