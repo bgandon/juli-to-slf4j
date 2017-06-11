@@ -390,15 +390,15 @@ concepts and rules you need to know. Fasten your seatbelt.
  - [A Short Guide To Hierarchical Class Loading](http://commons.apache.org/proper/commons-logging/tech.html#A_Short_Guide_To_Hierarchical_Class_Loading)
 
 When Logback is on the [System classpath](https://tomcat.apache.org/tomcat-8.0-doc/class-loader-howto.html#Class_Loader_Definitions),
-then any `ContextDetachingSCL` declared in a `web.xml` (for a waeapp that
+then any `ContextDetachingSCL` declared in a `web.xml` (for a webapp that
 doesn't ship with Logback) will be loaded by the System class loader. That's
 the rule. The child class loader used when parsing `web.xml` (and creating the
 web application) will delegate to its parent.
 
 So `ContextDetachingSCL` will use its own class loader (the System class
 loader) to load the `ServletContextListener` interface that it implements.
-Right. But that one is _not_ on the System classpath! It belongs to Tomcat
-jars, so it's on Catalina's classpath instead. As a result, the
+Right. But this latter one is _not_ on the System classpath! It belongs to
+Tomcat jars, so it's on Catalina's classpath instead. As a result, the
 `ServletContextListener` interface can only be reached by the (child) Catalina
 class loader, or any of its children.
 
@@ -407,7 +407,7 @@ classpath. All in all, `ContextDetachingSCL` and `LoggerContextFilter` are
 useless without the `ContextJNDISelector`, that cannot be used with JULI-to-
 SLF4J because Logback intializes before JNDI does. Anyway, the support for the
 “Catalina classpath” alternative is kept in JULI-to-SLF4J for users that might
-need Logback on that classpath.
+need Logback on this classpath.
 
 
 Author and License
