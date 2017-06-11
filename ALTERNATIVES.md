@@ -90,8 +90,8 @@ config in `setenv.sh`, or deleting the `conf/logging.properties`. Both ways
 deactivate the default JULI logging. In which case the early logs that happen
 in Tomcat before Catalina startup are always discard.
 
-You may wonder not using `jcl-over-slf4j` in the 2nd step instead? We actually
-discuss this alternative below.
+You may wonder why not using `jcl-over-slf4j` in the 2nd step instead? We
+actually discuss this alternative below.
 
 
 Compared to using _jcl-over-slf4j_
