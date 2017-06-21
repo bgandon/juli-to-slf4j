@@ -163,8 +163,9 @@ about running the JULI-to-SLF4J bridge in production.
 Setup
 -----
 
-1. Build the JULI-to-SLF4J Maven project, running `mvn clean package javadoc:jar`
-   in the base directory of this project. (If you don't have
+1. Build the JULI-to-SLF4J Maven project, running
+   `mvn clean package javadoc:jar source:jar` in the base directory of this
+   project. (If you don't have
    [Maven](https://maven.apache.org/) on your system, you first need to
    `brew install maven` (or anything similar with `apt-get` or `yum`) or
    [install it manually](https://maven.apache.org/install.html).)
