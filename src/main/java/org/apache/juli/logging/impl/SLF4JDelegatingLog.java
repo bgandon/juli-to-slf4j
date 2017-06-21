@@ -53,7 +53,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * <em>during</em> Catalina's startup, but is separate in concept.)
  * <ol>
  * <li><strong>“Pre-bootstrap” time:</strong><br>
- * Instances delegate to {@link a PreBootstrapLogger}s that store all
+ * Instances delegate to a {@link PreBootstrapLogger}s that store all
  * pre-boostrap logging events in memory.</li>
  * <li><strong>“Post-bootstrap” time:</strong><br>
  * Instances delegate to underlying wrapped {@link Logger}s, as returned by the
@@ -76,10 +76,10 @@ import org.slf4j.spi.LocationAwareLogger;
  * Diagnostics can be activated by lowering their detail level with the
  * {@code org.apache.juli.logging.impl.SLF4JDelegatingLog.diagnostics} system
  * property. Reference values are those defined by the
- * {@link LocationAwareLogger} interface. The default is {@link #WARN_INT},
- * which only reports problems. Actual reporting is
- * {@linkplain org.slf4j.helpers.Util#report delegatedJ} to SLF4, which outputs
- * messages to the {@linkplain System#err standard error stream}.
+ * {@link LocationAwareLogger} interface. The default is
+ * {@link LocationAwareLogger#WARN_INT}, which only reports problems. Actual
+ * reporting is {@linkplain org.slf4j.helpers.Util#report delegatedJ} to SLF4,
+ * which outputs messages to the {@linkplain System#err standard error stream}.
  *
  * @since 1.0.0
  * @author Benjamin Gandon

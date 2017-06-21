@@ -82,12 +82,11 @@ import org.slf4j.helpers.Util;
  * {@code catalina.sh} startup script for more details).
  * <p>
  * <strong>Inherited documentation from SLF4J API:</strong>
- * <p>
+ *
  * <blockquote> The <code>LoggerFactory</code> is a utility class producing
  * Loggers for various logging APIs, most notably for log4j, logback and JDK 1.4
- * logging. Other implementations such as {@link org.slf4j.impl.NOPLogger
- * NOPLogger} and {@link org.slf4j.impl.SimpleLogger SimpleLogger} are also
- * supported.
+ * logging. Other implementations such as {@code org.slf4j.impl.NOPLogger} and
+ * {@code org.slf4j.impl.SimpleLogger} are also supported.
  * <p>
  * <code>LoggerFactory</code> is essentially a wrapper around an
  * {@link ILoggerFactory} instance bound with <code>LoggerFactory</code> at
@@ -398,8 +397,7 @@ public final class LoggerFactory {
 
     /**
      * Return the {@link ILoggerFactory} instance in use.
-     * <p/>
-     * <p/>
+     * <p>
      * ILoggerFactory instance is bound with this class at compile time.
      *
      * @return the ILoggerFactory instance in use
