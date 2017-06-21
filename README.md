@@ -169,7 +169,7 @@ Setup
    `brew install maven` (or anything similar with `apt-get` or `yum`) or
    [install it manually](https://maven.apache.org/install.html).)
 
-2. Copy the resulting `target/juli-to-slf4j-1.1.0.jar` to your
+2. Copy the resulting `target/juli-to-slf4j-1.1.1.jar` to your
    `$CATALINA_BASE/bin/` directory. (For details about the `$CATALINA_BASE`
    directory, go read the “[Directories and Files](https://tomcat.apache.org/tomcat-8.0-doc/introduction.html#Directories_and_Files)”
    section of the Tomcat documentation, and the
@@ -193,7 +193,7 @@ Setup
 LOGGING_CONFIG="-Dnop"
 
 # Add bridge to the class path
-CLASSPATH="${CLASSPATH:+$CLASSPATH:}$CATALINA_BASE"/bin/juli-to-slf4j-1.1.0.jar
+CLASSPATH="${CLASSPATH:+$CLASSPATH:}$CATALINA_BASE"/bin/juli-to-slf4j-1.1.1.jar
 CLASSPATH="$CLASSPATH:$CATALINA_BASE"/bin/slf4j-api-1.7.12.jar
 CLASSPATH="$CLASSPATH:$CATALINA_BASE"/bin/logback-core-1.1.3.jar
 CLASSPATH="$CLASSPATH:$CATALINA_BASE"/bin/logback-classic-1.1.3.jar
@@ -347,7 +347,7 @@ Then the `setenv.sh` needs not adding them to the [System classpath](https://tom
 LOGGING_CONFIG="-Dnop"
 
 # Add bridge to the class path
-CLASSPATH="${CLASSPATH:+$CLASSPATH:}$CATALINA_BASE"/bin/juli-to-slf4j-1.1.0.jar
+CLASSPATH="${CLASSPATH:+$CLASSPATH:}$CATALINA_BASE"/bin/juli-to-slf4j-1.1.1.jar
 CLASSPATH="$CLASSPATH:$CATALINA_BASE"/bin/slf4j-api-1.7.12.jar
 
 # Control verbosity of the JULI-to-SLF4J bridge (ERROR=40, WARN=30 the default, INFO=20, DEBUG=10, TRACE=0)
