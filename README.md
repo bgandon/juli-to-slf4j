@@ -53,7 +53,7 @@ For several reasons.
    deal of effort).
 
  - You want the configuration to [automatically reload](http://logback.qos.ch/manual/configuration.html#autoScan),
-   because you don't want to waiste your time reastarting Tomcat each time you
+   because you don't want to waste your time restarting Tomcat each time you
    tweak the logging configuration.
 
  - You have read the following code from `DirectJDKLog`, which is the only
